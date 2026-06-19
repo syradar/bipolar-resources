@@ -12,7 +12,12 @@ const { locale, resource } = Astro.props;
 const copy = t(locale);
 ---
 
-<article class="card" data-resource-card data-audience={resource.audience} data-category={resource.category}>
+<article
+  class="card"
+  data-resource-card
+  data-audience={resource.audience}
+  data-category={resource.category}
+>
   <div class="eyebrow-row">
     <span class="pill">{copy.categories[resource.category]}</span>
     <span class="source">{resource.source}</span>
@@ -106,7 +111,9 @@ const copy = t(locale);
 
   dl {
     display: grid;
-    grid-template-columns: minmax(7.75rem, 1.35fr) minmax(3.25rem, 0.6fr) minmax(6.25rem, 0.9fr);
+    grid-template-columns:
+      minmax(7.75rem, 1.35fr) minmax(3.25rem, 0.6fr)
+      minmax(6.25rem, 0.9fr);
     gap: 0.6rem;
     margin: 0;
   }
@@ -141,7 +148,10 @@ const copy = t(locale);
 
   @media (max-width: 42rem) {
     dl {
-      grid-template-columns: 1fr;
+      /* grid-template-columns: 1fr; */
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
     }
   }
 </style>

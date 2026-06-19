@@ -31,21 +31,33 @@ const searchData = JSON.stringify({
       <h2 id="for-who">{copy.sections.forWho}</h2>
     </div>
     <div class="audience-grid">
-      <a href="#resource-search" class="audience-panel" data-audience-filter="egen-diagnos">
+      <a
+        href="#resource-search"
+        class="audience-panel"
+        data-audience-filter="egen-diagnos"
+      >
         <h3>{copy.audiences["egen-diagnos"]}</h3>
         <p>
           Kunskap, vardagsstöd och resurser som kan vara relevanta för dig som
           lever med diagnosen.
         </p>
       </a>
-      <a href="#resource-search" class="audience-panel" data-audience-filter="anhorig">
+      <a
+        href="#resource-search"
+        class="audience-panel"
+        data-audience-filter="anhorig"
+      >
         <h3>{copy.audiences.anhorig}</h3>
         <p>
           Hitta stöd, orientering och material som hjälper dig att stå bredvid
           någon du bryr dig om.
         </p>
       </a>
-      <a href="#resource-search" class="audience-panel" data-audience-filter="bada">
+      <a
+        href="#resource-search"
+        class="audience-panel"
+        data-audience-filter="bada"
+      >
         <h3>{copy.audiences.bada}</h3>
         <p>
           Vissa resurser fungerar som gemensam utgångspunkt för samtal, krisstöd
@@ -80,12 +92,7 @@ const searchData = JSON.stringify({
     <form class="filters" data-search-form>
       <div class="field search">
         <label for="resource-query">{copy.filters.searchLabel}</label>
-        <input
-          id="resource-query"
-          name="q"
-          type="search"
-          placeholder={copy.filters.searchPlaceholder}
-        />
+        <input id="resource-query" name="q" type="search" />
       </div>
       <div class="field">
         <label for="resource-audience">{copy.filters.audienceLabel}</label>
@@ -333,9 +340,17 @@ const searchData = JSON.stringify({
   }
 
   button {
-    background: var(--accent);
-    color: white;
+    /* background: var(--accent); */
+    color: var(--accent);
     cursor: pointer;
+    font-family: var(--font-display);
+    border-color: var(--accent);
+    transition: all 160ms ease;
+
+    &:hover {
+      background: var(--accent);
+      color: var(--surface);
+    }
   }
 
   .results-count {

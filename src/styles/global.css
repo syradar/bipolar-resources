@@ -48,8 +48,7 @@ img {
   max-width: 100%;
 }
 
-:where(
-  h1,
+:where(h1,
   h2,
   h3,
   h4,
@@ -69,8 +68,7 @@ img {
   .source,
   .tags,
   .results-count,
-  .empty-state
-) {
+  .empty-state) {
   font-family: var(--font-display);
 }
 
