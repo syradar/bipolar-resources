@@ -6,6 +6,7 @@ export type ResourceFilters = {
   q: string;
   audience: "" | ResourceRecord["audience"];
   category: "" | ResourceRecord["category"];
+  format: "" | ResourceRecord["format"];
 };
 
 export type SearchResourcesResult = {
@@ -22,6 +23,9 @@ const resourceSchema = {
   audience: "string",
   language: "string",
   source: "string",
+  format: "string",
+  creators: "string[]",
+  isbn: "string",
   tags: "string[]",
   dateAddedTimestamp: "number",
 } as const;
@@ -35,6 +39,7 @@ export function normalizeFilters(input: Partial<ResourceFilters>): ResourceFilte
     q: (input.q ?? "").trim(),
     audience: (input.audience ?? "") as ResourceFilters["audience"],
     category: (input.category ?? "") as ResourceFilters["category"],
+    format: (input.format ?? "") as ResourceFilters["format"],
   };
 }
 
@@ -42,7 +47,13 @@ export async function buildResourceIndexSnapshot(records: ResourceRecord[]): Pro
   const db = createEmptyResourcesDb();
 
   for (const record of records) {
-    await upsert(db, record);
+    await upsert(db, {
+      ...record,
+      url: record.url ?? "",
+      source: record.source ?? "",
+      language: record.language ?? "",
+      isbn: record.isbn ?? "",
+    });
   }
 
   return save(db);
@@ -63,6 +74,10 @@ function matchesFacet(record: ResourceRecord, filters: ResourceFilters): boolean
     return false;
   }
 
+  if (filters.format && record.format !== filters.format) {
+    return false;
+  }
+
   return true;
 }
 
@@ -76,7 +91,17 @@ export async function searchResources(
   if (filters.q) {
     const textResult = (await search(db, {
       term: filters.q,
-      properties: ["title", "description", "category", "audience", "source", "tags"],
+      properties: [
+        "title",
+        "description",
+        "category",
+        "audience",
+        "source",
+        "format",
+        "creators",
+        "isbn",
+        "tags",
+      ],
       tolerance: 1,
       limit: records.length,
     })) as { hits: Array<{ id: string | number }> };

@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import ResourceCard from "@/components/ResourceCard.astro";
-import { categories } from "@/content.config";
+import { categories, resourceFormats } from "@/lib/resource-model";
 import { t } from "@/lib/i18n";
 import { getResourcesByLocale } from "@/lib/resources";
 import { buildResourceIndexSnapshot } from "@/lib/resource-search";
@@ -113,6 +113,17 @@ const searchData = JSON.stringify({
           }
         </select>
       </div>
+      <div class="field">
+        <label for="resource-format">{copy.filters.formatLabel}</label>
+        <select id="resource-format" name="format">
+          <option value="">Alla</option>
+          {
+            resourceFormats.map((format) => (
+              <option value={format}>{copy.resourceFormats[format]}</option>
+            ))
+          }
+        </select>
+      </div>
       <div class="field button-field">
         <button type="reset">{copy.filters.reset}</button>
       </div>
@@ -179,6 +190,13 @@ const searchData = JSON.stringify({
             | "vardag-och-återhämtning"
             | "relationer-och-anhörigskap"
             | "föreningar-och-gemenskap",
+          format: String(formData.get("format") ?? "") as
+            | ""
+            | "website"
+            | "book"
+            | "video"
+            | "podcast"
+            | "place",
         });
 
         const visibleIds = new Set(result.records.map((record) => record.id));
@@ -322,7 +340,7 @@ const searchData = JSON.stringify({
     grid-template-areas:
       "search search"
       "audience category"
-      "reset reset";
+      "format reset";
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-2);
     align-items: end;
@@ -345,6 +363,10 @@ const searchData = JSON.stringify({
     grid-area: category;
   }
 
+  .field:has(#resource-format) {
+    grid-area: format;
+  }
+
   .button-field {
     grid-area: reset;
     justify-self: stretch;
@@ -352,8 +374,8 @@ const searchData = JSON.stringify({
 
   @container (min-width: 46rem) {
     .filters {
-      grid-template-areas: "search audience category reset";
-      grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+      grid-template-areas: "search audience category format reset";
+      grid-template-columns: minmax(0, 2fr) repeat(4, minmax(0, 1fr));
     }
   }
 

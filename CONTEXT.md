@@ -5,8 +5,40 @@ En fristående resursbank som samlar externa stöd- och informationskällor om b
 ## Language
 
 **Resource**:
-Den grundläggande innehållsenheten i sajten: en länkad extern källa med beskrivande metadata.
+Den grundläggande innehållsenheten i sajten: en extern källa, plats eller referens med beskrivande metadata. En resurs kan ha en URL, men är inte per definition en länk.
 _Avoid_: Article, post, link
+
+**Resource Format**:
+Det kontrollerade medieslag eller åtkomstsätt en resurs har, till exempel webbplats, bok, video, podd eller plats.
+_Avoid_: Type, medium
+
+**Website Resource**:
+En resurs som primärt nås via en URL. Saknat format i äldre innehåll tolkas som webbplats under migrationen.
+_Avoid_: Link-only resource
+
+**Resource Creator**:
+En eller flera personer eller organisationer som är krediterade skapare av resursen, till exempel författare, föreläsare, programledare eller producent. Fältet bör vara flertal även när bara en skapare anges.
+_Avoid_: Author
+
+**Resource Source**:
+Den valfria organisation, plattform, webbplats eller utgivare där resursen kommer från eller publiceras.
+_Avoid_: Creator, author
+
+**Linked Resource Title**:
+En resurstitel som leder till en extern URL och därför ska ha tydlig länkmarkering.
+_Avoid_: Clickable card
+
+**Unlinked Resource Title**:
+En resurstitel utan extern URL. Den ska ha samma typografiska vikt som en länkad titel men sakna länkmarkering.
+_Avoid_: Disabled link
+
+**Video Resource**:
+En resurs i föreläsnings-, webinar-, samtals- eller presentationsformat. Den behöver inte vara del av en serie.
+_Avoid_: Podcast episode
+
+**Podcast Resource**:
+En resurs i poddformat, oavsett om distributionen är ljud eller video. Det viktiga är att den hör till ett återkommande podd-/programformat.
+_Avoid_: Talk, webinar
 
 **Audience**:
 Den primära målgrupp en resurs är avsedd för.

@@ -26,11 +26,14 @@ Fält i Contentful:
 
 - `title` text
 - `description` text
-- `url` text
+- `format` text, ett av `website`, `book`, `video`, `podcast`, `place`. Saknat värde tolkas som `website` under migrationen.
+- `url` text, krävs för `website`, annars valfritt
 - `category` text, ett av värdena i `src/content.config.ts`
 - `audience` text, ett av värdena i `src/content.config.ts`
-- `language` text, `sv` eller `en`
+- `language` text, valfritt, `sv` eller `en`
 - `source` text, valfritt. Om det saknas används domänen från `url`.
+- `creators` lista med text, valfritt
+- `isbn` text, valfritt
 - `tags` lista med text
 - `featured` boolean
 - `dateAdded` date

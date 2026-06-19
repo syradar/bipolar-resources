@@ -1,7 +1,6 @@
 import * as contentful from "contentful";
 import type { ZodError } from "astro/zod";
-import { z } from "astro/zod";
-import { audiences, categories } from "@/content.config";
+import { resourceSchema } from "@/lib/resource-model";
 import type { ResourceRecord } from "@/lib/resources";
 
 type ContentfulResourceSkeleton = {
@@ -9,29 +8,19 @@ type ContentfulResourceSkeleton = {
   fields: {
     title: contentful.EntryFieldTypes.Text;
     description: contentful.EntryFieldTypes.Text;
-    url: contentful.EntryFieldTypes.Text;
+    url?: contentful.EntryFieldTypes.Text;
     category: contentful.EntryFieldTypes.Symbol;
     audience: contentful.EntryFieldTypes.Symbol;
-    language: contentful.EntryFieldTypes.Symbol;
+    language?: contentful.EntryFieldTypes.Symbol;
+    format?: contentful.EntryFieldTypes.Symbol;
     source?: contentful.EntryFieldTypes.Text;
+    creators?: contentful.EntryFieldTypes.Array<contentful.EntryFieldTypes.Symbol>;
+    isbn?: contentful.EntryFieldTypes.Symbol;
     tags?: contentful.EntryFieldTypes.Array<contentful.EntryFieldTypes.Symbol>;
     featured?: contentful.EntryFieldTypes.Boolean;
     dateAdded: contentful.EntryFieldTypes.Date;
   };
 };
-
-const contentfulResourceSchema = z.object({
-  title: z.string(),
-  description: z.string(),
-  url: z.url(),
-  category: z.enum(categories),
-  audience: z.enum(audiences),
-  language: z.enum(["sv", "en"]),
-  source: z.string().optional(),
-  tags: z.array(z.string()).default([]),
-  featured: z.boolean().default(false),
-  dateAdded: z.string(),
-});
 
 type ContentfulConfig = {
   space: string;
@@ -79,7 +68,7 @@ export function createContentfulClient() {
 }
 
 export async function getContentfulResourceRecords(
-  locale: "sv" | "en",
+  _locale: "sv" | "en",
 ): Promise<ResourceRecord[] | null> {
   const config = getContentfulConfig();
   const contentfulClient = createContentfulClient();
@@ -88,7 +77,7 @@ export async function getContentfulResourceRecords(
     return null;
   }
 
-  const entries = await getResourceEntries(contentfulClient, config, locale);
+  const entries = await getResourceEntries(contentfulClient, config);
 
   return entries.items
     .map((entry) => toResourceRecord(entry))
@@ -98,14 +87,17 @@ export async function getContentfulResourceRecords(
 function toResourceRecord(
   entry: contentful.Entry<ContentfulResourceSkeleton, undefined, string>,
 ): ResourceRecord | null {
-  const parsed = contentfulResourceSchema.safeParse({
+  const parsed = resourceSchema.safeParse({
       title: entry.fields.title,
       description: entry.fields.description,
       url: entry.fields.url,
       category: entry.fields.category,
       audience: entry.fields.audience,
       language: entry.fields.language,
+      format: entry.fields.format ?? "website",
       source: entry.fields.source,
+      creators: entry.fields.creators ?? [],
+      isbn: entry.fields.isbn,
       tags: entry.fields.tags ?? [],
       featured: entry.fields.featured ?? false,
       dateAdded: entry.sys.createdAt
@@ -136,12 +128,10 @@ function toResourceRecord(
 async function getResourceEntries(
   contentfulClient: contentful.ContentfulClientApi<undefined>,
   config: ContentfulConfig,
-  locale: "sv" | "en",
 ) {
   try {
     return await contentfulClient.getEntries<ContentfulResourceSkeleton>({
       content_type: config.resourceContentType,
-      locale,
       limit: 1000,
     });
   } catch (error) {
@@ -157,11 +147,15 @@ async function getResourceEntries(
   }
 }
 
-function getSourceFromUrl(url: string): string {
+function getSourceFromUrl(url: string | undefined): string | undefined {
+  if (!url) {
+    return undefined;
+  }
+
   try {
     return new URL(url).hostname.replace(/^www\./, "");
   } catch {
-    return "Okänd källa";
+    return undefined;
   }
 }
 

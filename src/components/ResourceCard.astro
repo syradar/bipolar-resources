@@ -13,6 +13,7 @@ const copy = t(locale);
 const formattedDateAdded = new Intl.DateTimeFormat(locale, {
   dateStyle: "short",
 }).format(new Date(resource.dateAdded));
+const titleClass = resource.url ? "title-link" : "title-text";
 ---
 
 <article
@@ -20,42 +21,68 @@ const formattedDateAdded = new Intl.DateTimeFormat(locale, {
   data-resource-card
   data-audience={resource.audience}
   data-category={resource.category}
+  data-format={resource.format}
 >
-  <div class="eyebrow-row">
+  <div class="card-top">
     <span class="pill">{copy.categories[resource.category]}</span>
-    <span class="source">{resource.source}</span>
+    <span class={`pill format-pill ${resource.format}`}>
+      {copy.resourceFormats[resource.format]}
+    </span>
   </div>
   <h3>
-    <a href={resource.url} target="_blank" rel="noreferrer">{resource.title}</a>
+    {
+      resource.url ? (
+        <a
+          class={titleClass}
+          href={resource.url}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {resource.title}
+        </a>
+      ) : (
+        <span class={titleClass}>{resource.title}</span>
+      )
+    }
   </h3>
-  <p>{resource.description}</p>
-  <dl>
-    <div>
+  <p class="card-description">{resource.description}</p>
+  <dl class="card-meta">
+    <div class="meta-audience">
       <dt>{copy.cards.audience}</dt>
       <dd>{copy.audiences[resource.audience]}</dd>
     </div>
-    <div>
-      <dt>{copy.cards.language}</dt>
-      <dd>{resource.language.toUpperCase()}</dd>
-    </div>
-    <div>
+    {
+      resource.source && (
+        <div class="meta-source">
+          <dt>{copy.cards.source}</dt>
+          <dd>{resource.source}</dd>
+        </div>
+      )
+    }
+    {
+      resource.language && (
+        <div class="meta-language">
+          <dt>{copy.cards.language}</dt>
+          <dd>{resource.language.toUpperCase()}</dd>
+        </div>
+      )
+    }
+    <div class="meta-date">
       <dt>{copy.cards.dateAdded}</dt>
       <dd>
         <time datetime={resource.dateAdded}>{formattedDateAdded}</time>
       </dd>
     </div>
   </dl>
-  <ul class="tags" aria-label="Taggar">
-    {resource.tags.map((tag) => <li>{tag}</li>)}
-  </ul>
 </article>
 
 <style>
   .card {
     display: grid;
     align-content: start;
-    grid-row: span 6;
+    grid-row: span 4;
     grid-template-rows: subgrid;
+    grid-template-columns: 1fr;
     gap: var(--space-2);
     padding: var(--space-3);
     border-radius: var(--radius);
@@ -68,25 +95,78 @@ const formattedDateAdded = new Intl.DateTimeFormat(locale, {
     display: none !important;
   }
 
-  .eyebrow-row {
+  .card-top {
     display: flex;
-    justify-content: space-between;
-    gap: var(--space-2);
-    align-items: center;
     flex-wrap: wrap;
+    gap: var(--space-1);
+    justify-content: space-between;
+    align-items: baseline;
   }
 
   .pill {
-    background: var(--accent-soft);
-    color: var(--accent);
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .pill {
+    background: var(--bg);
+    color: var(--text);
     padding: 0.35rem 0.7rem;
     border-radius: 999px;
     font-size: var(--step--1);
   }
 
-  .source {
+  h3,
+  p,
+  .card-meta {
+    grid-column: 1 / -1;
+  }
+
+  .card-description {
     color: var(--muted);
+    font-size: var(--step-0);
+  }
+
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    margin: 0;
+  }
+
+  .format-pill {
+    --format-bg: #efe7d3;
+    --format-text: #6b5635;
+    background: var(--format-bg);
+    color: var(--format-text);
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
     font-size: var(--step--1);
+  }
+
+  .format-pill.website {
+    --format-bg: #dce6e1;
+    --format-text: #3f625a;
+  }
+
+  .format-pill.book {
+    --format-bg: #eadfcb;
+    --format-text: #6b4f2a;
+  }
+
+  .format-pill.video {
+    --format-bg: #e3d9d0;
+    --format-text: #71483e;
+  }
+
+  .format-pill.podcast {
+    --format-bg: #dbe2ea;
+    --format-text: #435a70;
+  }
+
+  .format-pill.place {
+    --format-bg: #dfe8d7;
+    --format-text: #4e673b;
   }
 
   h3 {
@@ -95,7 +175,7 @@ const formattedDateAdded = new Intl.DateTimeFormat(locale, {
     text-wrap: balance;
   }
 
-  h3 a {
+  .title-link {
     text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
     text-decoration-thickness: 0.07em;
     text-underline-offset: 0.12em;
@@ -104,9 +184,13 @@ const formattedDateAdded = new Intl.DateTimeFormat(locale, {
       text-decoration-color 160ms ease;
   }
 
-  h3 a:hover {
+  .title-link:hover {
     color: var(--accent);
     text-decoration-color: currentColor;
+  }
+
+  .title-text {
+    text-decoration: none;
   }
 
   p {
@@ -115,38 +199,14 @@ const formattedDateAdded = new Intl.DateTimeFormat(locale, {
     line-height: 1.6;
   }
 
-  dl {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 5.25rem), 1fr));
-    gap: var(--space-1);
-    margin: 0;
-  }
-
   dt {
     font-size: var(--step--1);
     color: var(--muted);
   }
 
   dd {
+    font-size: var(--step--0);
     margin: 0.25rem 0 0;
     line-height: 1.15;
-  }
-
-  .tags {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-1);
-    padding: 0;
-    margin: 0;
-    align-self: end;
-  }
-
-  .tags li {
-    padding: 0.32rem 0.55rem;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    color: var(--muted);
-    font-size: var(--step--1);
   }
 </style>

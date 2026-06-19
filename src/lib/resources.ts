@@ -8,11 +8,14 @@ export type ResourceRecord = {
   id: string;
   title: string;
   description: string;
-  url: string;
+  url?: string;
   category: ResourceEntry["data"]["category"];
   audience: ResourceEntry["data"]["audience"];
-  language: ResourceEntry["data"]["language"];
-  source: string;
+  language?: ResourceEntry["data"]["language"];
+  format: ResourceEntry["data"]["format"];
+  source?: string;
+  creators: string[];
+  isbn?: string;
   tags: string[];
   featured: boolean;
   dateAdded: string;
@@ -52,7 +55,10 @@ function toResourceRecord(entry: ResourceEntry): ResourceRecord {
     category: entry.data.category,
     audience: entry.data.audience,
     language: entry.data.language,
+    format: entry.data.format,
     source: entry.data.source,
+    creators: entry.data.creators,
+    isbn: entry.data.isbn,
     tags: entry.data.tags,
     featured: entry.data.featured,
     dateAdded: entry.data.dateAdded,

@@ -1,8 +1,9 @@
-import { categories } from "@/content.config";
+import { categories, resourceFormats } from "@/lib/resource-model";
 
 export const locales = ["sv", "en"] as const;
 export type Locale = (typeof locales)[number];
 export type Category = (typeof categories)[number];
+export type ResourceFormat = (typeof resourceFormats)[number];
 export type Audience = "egen-diagnos" | "anhörig" | "båda";
 
 type Messages = {
@@ -21,11 +22,13 @@ type Messages = {
   };
   audiences: Record<Audience, string>;
   categories: Record<Category, string>;
+  resourceFormats: Record<ResourceFormat, string>;
   filters: {
     searchLabel: string;
     searchPlaceholder: string;
     audienceLabel: string;
     categoryLabel: string;
+    formatLabel: string;
     reset: string;
     resultCount: string;
     noResults: string;
@@ -90,11 +93,19 @@ export const messages: Record<Locale, Messages> = {
       "relationer-och-anhörigskap": "Relationer och anhörigskap",
       "föreningar-och-gemenskap": "Föreningar och gemenskap",
     },
+    resourceFormats: {
+      website: "Webbplats",
+      book: "Bok",
+      video: "Video",
+      podcast: "Podd",
+      place: "Plats",
+    },
     filters: {
       searchLabel: "Sök bland resurser",
       searchPlaceholder: "Sök på titel, beskrivning, kategori eller tagg",
       audienceLabel: "Målgrupp",
       categoryLabel: "Kategori",
+      formatLabel: "Format",
       reset: "Rensa filter",
       resultCount: "träffar",
       noResults: "Inga resurser matchade din sökning eller filtrering.",
@@ -157,11 +168,19 @@ export const messages: Record<Locale, Messages> = {
       "relationer-och-anhörigskap": "Relationships and relatives",
       "föreningar-och-gemenskap": "Associations and community",
     },
+    resourceFormats: {
+      website: "Website",
+      book: "Book",
+      video: "Video",
+      podcast: "Podcast",
+      place: "Place",
+    },
     filters: {
       searchLabel: "Search resources",
       searchPlaceholder: "Search title, description, category or tags",
       audienceLabel: "Audience",
       categoryLabel: "Category",
+      formatLabel: "Format",
       reset: "Reset filters",
       resultCount: "results",
       noResults: "No resources matched your search or filters.",
