@@ -13,6 +13,19 @@
   --radius: 1.25rem;
   --radius-sm: 0.85rem;
   --content-width: 72rem;
+  --measure: 52rem;
+  --card-min: clamp(17.5rem, 30vi, 23rem);
+  --filter-control-min: clamp(8.5rem, 20vi, 14rem);
+  --gutter: clamp(1rem, 4vi, 2.5rem);
+  --space-1: clamp(0.45rem, 0.35rem + 0.5vi, 0.75rem);
+  --space-2: clamp(0.75rem, 0.6rem + 0.75vi, 1.25rem);
+  --space-3: clamp(1rem, 0.8rem + 1.1vi, 1.75rem);
+  --space-4: clamp(1.5rem, 1.1rem + 2vi, 3rem);
+  --step--1: clamp(0.86rem, 0.82rem + 0.2vi, 0.95rem);
+  --step-0: clamp(1rem, 0.94rem + 0.32vi, 1.13rem);
+  --step-1: clamp(1.2rem, 1.08rem + 0.6vi, 1.5rem);
+  --step-2: clamp(1.55rem, 1.32rem + 1.15vi, 2.35rem);
+  --step-3: clamp(2.35rem, 1.75rem + 3vi, 4.5rem);
   --font-copy: Georgia, "Times New Roman", serif;
   --font-display: var(--font-national-park), Verdana, sans-serif;
 }

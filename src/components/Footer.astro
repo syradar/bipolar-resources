@@ -14,18 +14,18 @@ const copy = t(locale);
 
 <style>
   .site-footer {
-    padding: 3rem 0 4rem;
+    padding: var(--space-4) 0 calc(var(--space-4) * 1.35);
   }
 
   .inner {
-    width: min(100% - 2rem, var(--content-width));
+    width: min(100% - (var(--gutter) * 2), var(--content-width));
     margin: 0 auto;
     color: var(--muted);
     border-top: 1px solid var(--line);
-    padding-top: 1.5rem;
+    padding-top: var(--space-3);
   }
 
   .small {
-    font-size: 0.95rem;
+    font-size: var(--step--1);
   }
 </style>

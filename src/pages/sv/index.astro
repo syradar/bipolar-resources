@@ -220,15 +220,15 @@ const searchData = JSON.stringify({
 
 <style>
   section {
-    width: min(100% - 2rem, var(--content-width));
+    width: min(100% - (var(--gutter) * 2), var(--content-width));
     margin: 0 auto;
-    padding: 2rem 0;
+    padding: var(--space-4) 0;
   }
 
   .hero {
     display: grid;
-    gap: 1.5rem;
-    padding-top: 2.75rem;
+    gap: var(--space-3);
+    padding-top: var(--space-4);
   }
 
   /* .hero-copy, */
@@ -242,14 +242,14 @@ const searchData = JSON.stringify({
   }
 
   .hero-copy {
-    padding: 2rem;
+    padding: var(--space-4);
   }
 
   .eyebrow {
     color: var(--accent);
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    font-size: 0.8rem;
+    font-size: var(--step--1);
     margin: 0 0 1rem;
   }
 
@@ -261,12 +261,12 @@ const searchData = JSON.stringify({
 
   h1 {
     margin: 0;
-    font-size: clamp(2.5rem, 2.1rem + 2vw, 4.5rem);
+    font-size: var(--step-3);
     max-width: 12ch;
   }
 
   .intro {
-    font-size: 1.1rem;
+    font-size: var(--step-0);
     line-height: 1.75;
     color: var(--muted);
     max-width: 60ch;
@@ -274,24 +274,28 @@ const searchData = JSON.stringify({
   }
 
   .section-heading {
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-2);
   }
 
   .section-heading h2 {
     margin: 0;
-    font-size: clamp(1.7rem, 1.4rem + 1vw, 2.4rem);
+    font-size: var(--step-2);
   }
 
   .audience-grid,
   .resource-grid {
     display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--card-min)), 1fr));
+  }
+
+  .resource-grid {
+    grid-auto-rows: auto auto auto auto minmax(0.25rem, 1fr) auto;
   }
 
   .audience-panel {
     display: block;
-    padding: 1.25rem;
+    padding: var(--space-3);
     text-decoration: none;
     transition:
       border-color 160ms ease,
@@ -312,24 +316,59 @@ const searchData = JSON.stringify({
 
   .filters {
     display: grid;
-    grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr)) auto;
-    gap: 1rem;
+    grid-template-areas:
+      "search search"
+      "audience category"
+      "reset reset";
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
     align-items: end;
-    padding: 1rem;
+    padding: var(--space-2);
+  }
+
+  .search-section {
+    container-type: inline-size;
+  }
+
+  .search {
+    grid-area: search;
+  }
+
+  .field:has(#resource-audience) {
+    grid-area: audience;
+  }
+
+  .field:has(#resource-category) {
+    grid-area: category;
+  }
+
+  .button-field {
+    grid-area: reset;
+    justify-self: stretch;
+  }
+
+  @container (min-width: 46rem) {
+    .filters {
+      grid-template-areas: "search audience category reset";
+      grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+    }
   }
 
   .field {
     display: grid;
-    gap: 0.5rem;
+    gap: var(--space-1);
+    min-width: 0;
   }
 
   label {
-    font-size: 0.95rem;
+    font-size: var(--step--1);
   }
 
   input,
   select,
   button {
+    width: 100%;
+    min-width: 0;
     min-height: 3rem;
     border-radius: var(--radius-sm);
     border: 1px solid var(--line);
@@ -340,11 +379,11 @@ const searchData = JSON.stringify({
   }
 
   button {
-    /* background: var(--accent); */
     color: var(--accent);
     cursor: pointer;
     font-family: var(--font-display);
     border-color: var(--accent);
+    white-space: nowrap;
     transition: all 160ms ease;
 
     &:hover {
@@ -366,12 +405,4 @@ const searchData = JSON.stringify({
     display: none !important;
   }
 
-  @media (max-width: 64rem) {
-    .hero,
-    .audience-grid,
-    .resource-grid,
-    .filters {
-      grid-template-columns: 1fr;
-    }
-  }
 </style>

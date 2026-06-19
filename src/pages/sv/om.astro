@@ -23,13 +23,13 @@ const copy = t(locale);
 
 <style>
   .page {
-    width: min(100% - 2rem, 48rem);
+    width: min(100% - (var(--gutter) * 2), var(--measure));
     margin: 0 auto;
-    padding: 3rem 0 4rem;
+    padding: var(--space-4) 0 calc(var(--space-4) * 1.35);
   }
 
   h1 {
-    font-size: clamp(2.3rem, 2rem + 1.4vw, 3.3rem);
+    font-size: var(--step-3);
   }
 
   p {

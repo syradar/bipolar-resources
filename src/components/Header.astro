@@ -59,19 +59,20 @@ const links = [
   }
 
   .inner {
-    width: min(100% - 2rem, var(--content-width));
+    width: min(100% - (var(--gutter) * 2), var(--content-width));
     margin: 0 auto;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
-    padding: 1rem 0;
+    gap: var(--space-2);
+    padding: var(--space-2) 0;
   }
 
   .brand {
     display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--space-1);
     font-weight: 700;
     text-decoration: none;
     letter-spacing: 0.02em;
@@ -89,7 +90,7 @@ const links = [
     list-style: none;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: var(--space-1);
     padding: 0;
     margin: 0;
   }
@@ -98,7 +99,7 @@ const links = [
     display: inline-flex;
     align-items: center;
     min-height: 2.75rem;
-    padding: 0.5rem 0.85rem;
+    padding: 0.5rem clamp(0.65rem, 0.5rem + 0.75vi, 0.95rem);
     text-decoration: none;
     border-radius: 999px;
     color: var(--muted);
@@ -108,12 +109,5 @@ const links = [
   nav a[aria-current="page"] {
     background: var(--accent-soft);
     color: var(--text);
-  }
-
-  @media (max-width: 50rem) {
-    .inner {
-      flex-direction: column;
-      align-items: flex-start;
-    }
   }
 </style>
