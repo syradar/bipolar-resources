@@ -2,14 +2,14 @@ import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 import { defineCollection } from "astro:content";
 
-const audiences = ["egen-diagnos", "anhorig", "bada"] as const;
+const audiences = ["egen-diagnos", "anhörig", "båda"] as const;
 const categories = [
-  "krisstod",
-  "vard-och-rattigheter",
+  "krisstöd",
+  "vård-och-rättigheter",
   "om-bipolaritet",
-  "vardag-och-aterhamtning",
-  "relationer-och-anhorigskap",
-  "foreningar-och-gemenskap",
+  "vardag-och-återhämtning",
+  "relationer-och-anhörigskap",
+  "föreningar-och-gemenskap",
 ] as const;
 
 const resources = defineCollection({
@@ -22,7 +22,18 @@ const resources = defineCollection({
     audience: z.enum(audiences),
     language: z.enum(["sv", "en"]),
     source: z.string(),
-    tags: z.array(z.string()).default([]),
+    tags: z.array(z.string().trim()
+      .min(1)
+      .refine(
+        (value) => {
+          const firstLetter = value.match(/\p{L}/u)?.[0];
+
+          return !firstLetter || firstLetter === firstLetter.toLocaleUpperCase("sv-SE");
+        },
+        {
+          message: "Must use sentence case",
+        },
+      )).default([]),
     featured: z.boolean().default(false),
     dateAdded: z.string(),
   }),

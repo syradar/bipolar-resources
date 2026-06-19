@@ -45,9 +45,9 @@ const searchData = JSON.stringify({
       <a
         href="#resource-search"
         class="audience-panel"
-        data-audience-filter="anhorig"
+        data-audience-filter="anhörig"
       >
-        <h3>{copy.audiences.anhorig}</h3>
+        <h3>{copy.audiences.anhörig}</h3>
         <p>
           Hitta stöd, orientering och material som hjälper dig att stå bredvid
           någon du bryr dig om.
@@ -56,9 +56,9 @@ const searchData = JSON.stringify({
       <a
         href="#resource-search"
         class="audience-panel"
-        data-audience-filter="bada"
+        data-audience-filter="båda"
       >
-        <h3>{copy.audiences.bada}</h3>
+        <h3>{copy.audiences.båda}</h3>
         <p>
           Vissa resurser fungerar som gemensam utgångspunkt för samtal, krisstöd
           eller fortsatt sökande.
@@ -98,7 +98,7 @@ const searchData = JSON.stringify({
         <label for="resource-audience">{copy.filters.audienceLabel}</label>
         <select id="resource-audience" name="audience">
           <option value="">Alla</option>
-          <option value="anhorig">{copy.audiences.anhorig}</option>
+          <option value="anhörig">{copy.audiences.anhörig}</option>
           <option value="egen-diagnos">{copy.audiences["egen-diagnos"]}</option>
         </select>
       </div>
@@ -169,16 +169,16 @@ const searchData = JSON.stringify({
           audience: String(formData.get("audience") ?? "") as
             | ""
             | "egen-diagnos"
-            | "anhorig"
-            | "bada",
+            | "anhörig"
+            | "båda",
           category: String(formData.get("category") ?? "") as
             | ""
-            | "krisstod"
-            | "vard-och-rattigheter"
+            | "krisstöd"
+            | "vård-och-rättigheter"
             | "om-bipolaritet"
-            | "vardag-och-aterhamtning"
-            | "relationer-och-anhorigskap"
-            | "foreningar-och-gemenskap",
+            | "vardag-och-återhämtning"
+            | "relationer-och-anhörigskap"
+            | "föreningar-och-gemenskap",
         });
 
         const visibleIds = new Set(result.records.map((record) => record.id));
@@ -286,7 +286,10 @@ const searchData = JSON.stringify({
   .resource-grid {
     display: grid;
     gap: var(--space-2);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--card-min)), 1fr));
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(min(100%, var(--card-min)), 1fr)
+    );
   }
 
   .resource-grid {
@@ -404,5 +407,4 @@ const searchData = JSON.stringify({
   [hidden] {
     display: none !important;
   }
-
 </style>

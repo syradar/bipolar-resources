@@ -3,7 +3,7 @@ import { categories } from "@/content.config";
 export const locales = ["sv", "en"] as const;
 export type Locale = (typeof locales)[number];
 export type Category = (typeof categories)[number];
-export type Audience = "egen-diagnos" | "anhorig" | "bada";
+export type Audience = "egen-diagnos" | "anhörig" | "båda";
 
 type Messages = {
   siteTitle: string;
@@ -79,16 +79,16 @@ export const messages: Record<Locale, Messages> = {
     },
     audiences: {
       "egen-diagnos": "Egen diagnos",
-      anhorig: "Anhörig",
-      bada: "Alla",
+      "anhörig": "Anhörig",
+      "båda": "Alla",
     },
     categories: {
-      krisstod: "Krisstöd",
-      "vard-och-rattigheter": "Vård och rättigheter",
+      "krisstöd": "Krisstöd",
+      "vård-och-rättigheter": "Vård och rättigheter",
       "om-bipolaritet": "Om bipolaritet",
-      "vardag-och-aterhamtning": "Vardag och återhämtning",
-      "relationer-och-anhorigskap": "Relationer och anhörigskap",
-      "foreningar-och-gemenskap": "Föreningar och gemenskap",
+      "vardag-och-återhämtning": "Vardag och återhämtning",
+      "relationer-och-anhörigskap": "Relationer och anhörigskap",
+      "föreningar-och-gemenskap": "Föreningar och gemenskap",
     },
     filters: {
       searchLabel: "Sök bland resurser",
@@ -146,16 +146,16 @@ export const messages: Record<Locale, Messages> = {
     },
     audiences: {
       "egen-diagnos": "Diagnosis",
-      anhorig: "Relative",
-      bada: "All",
+      "anhörig": "Relative",
+      "båda": "All",
     },
     categories: {
-      krisstod: "Crisis support",
-      "vard-och-rattigheter": "Care and rights",
+      "krisstöd": "Crisis support",
+      "vård-och-rättigheter": "Care and rights",
       "om-bipolaritet": "About bipolar disorder",
-      "vardag-och-aterhamtning": "Daily life and recovery",
-      "relationer-och-anhorigskap": "Relationships and relatives",
-      "foreningar-och-gemenskap": "Associations and community",
+      "vardag-och-återhämtning": "Daily life and recovery",
+      "relationer-och-anhörigskap": "Relationships and relatives",
+      "föreningar-och-gemenskap": "Associations and community",
     },
     filters: {
       searchLabel: "Search resources",
