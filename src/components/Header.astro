@@ -1,0 +1,119 @@
+---
+import type { Locale } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
+
+type Props = {
+  locale: Locale;
+  currentPath: string;
+};
+
+const { locale, currentPath } = Astro.props;
+const copy = t(locale);
+const basePath = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const withBase = (path: string) => `${basePath}${path.replace(/^\//, "")}`;
+
+const links = [
+  { href: withBase(`${locale}/`), label: copy.nav.home },
+  { href: withBase(`${locale}/om/`), label: copy.nav.about },
+  { href: withBase(`${locale}/ansvarsfriskrivning/`), label: copy.nav.disclaimer },
+  { href: withBase(`${locale}/foresla-resurs/`), label: copy.nav.submit },
+];
+---
+
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href={withBase(`${locale}/`)}>
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>{copy.siteTitle}</span>
+    </a>
+
+    <nav aria-label="Huvudnavigation">
+      <ul>
+        {
+          links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                aria-current={currentPath === link.href ? "page" : undefined}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(16px);
+    background: color-mix(in srgb, var(--surface) 82%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--line) 85%, white);
+  }
+
+  .inner {
+    width: min(100% - 2rem, var(--content-width));
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+
+  .brand-mark {
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--accent) 0%, #8da7a0 100%);
+    box-shadow: 0 0 0 0.35rem var(--accent-soft);
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0;
+    margin: 0;
+  }
+
+  nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.85rem;
+    text-decoration: none;
+    border-radius: 999px;
+    color: var(--muted);
+    font-family: var(--font-display);
+  }
+
+  nav a[aria-current="page"] {
+    background: var(--accent-soft);
+    color: var(--text);
+  }
+
+  @media (max-width: 50rem) {
+    .inner {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

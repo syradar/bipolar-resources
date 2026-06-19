@@ -1,0 +1,147 @@
+---
+import type { Locale } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
+import type { ResourceRecord } from "@/lib/resources";
+
+type Props = {
+  locale: Locale;
+  resource: ResourceRecord;
+};
+
+const { locale, resource } = Astro.props;
+const copy = t(locale);
+---
+
+<article class="card" data-resource-card data-audience={resource.audience} data-category={resource.category}>
+  <div class="eyebrow-row">
+    <span class="pill">{copy.categories[resource.category]}</span>
+    <span class="source">{resource.source}</span>
+  </div>
+  <h3>
+    <a href={resource.url} target="_blank" rel="noreferrer">{resource.title}</a>
+  </h3>
+  <p>{resource.description}</p>
+  <dl>
+    <div>
+      <dt>{copy.cards.audience}</dt>
+      <dd>{copy.audiences[resource.audience]}</dd>
+    </div>
+    <div>
+      <dt>{copy.cards.language}</dt>
+      <dd>{resource.language.toUpperCase()}</dd>
+    </div>
+    <div>
+      <dt>{copy.cards.dateAdded}</dt>
+      <dd>{resource.dateAdded}</dd>
+    </div>
+  </dl>
+  <ul class="tags" aria-label="Taggar">
+    {resource.tags.map((tag) => <li>{tag}</li>)}
+  </ul>
+</article>
+
+<style>
+  .card {
+    display: grid;
+    align-content: start;
+    grid-template-rows: auto auto auto auto 1fr auto;
+    gap: 0.95rem;
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    background: var(--surface-strong);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+
+  .card[hidden] {
+    display: none !important;
+  }
+
+  .eyebrow-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .pill {
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+  }
+
+  .source {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: clamp(1.2rem, 1rem + 0.7vw, 1.5rem);
+    text-wrap: balance;
+  }
+
+  h3 a {
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+    text-decoration-thickness: 0.07em;
+    text-underline-offset: 0.12em;
+    transition:
+      color 160ms ease,
+      text-decoration-color 160ms ease;
+  }
+
+  h3 a:hover {
+    color: var(--accent);
+    text-decoration-color: currentColor;
+  }
+
+  p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: minmax(7.75rem, 1.35fr) minmax(3.25rem, 0.6fr) minmax(6.25rem, 0.9fr);
+    gap: 0.6rem;
+    margin: 0;
+  }
+
+  dt {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  dd {
+    margin: 0.25rem 0 0;
+    line-height: 1.15;
+  }
+
+  .tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    padding: 0;
+    margin: 0;
+    align-self: end;
+  }
+
+  .tags li {
+    padding: 0.32rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 42rem) {
+    dl {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

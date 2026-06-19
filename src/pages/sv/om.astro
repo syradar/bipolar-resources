@@ -1,0 +1,39 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { t } from "@/lib/i18n";
+
+const locale = "sv" as const;
+const copy = t(locale);
+---
+
+<BaseLayout locale={locale} title={copy.about.title}>
+  <section class="page">
+    <h1>{copy.about.title}</h1>
+    <p>{copy.about.intro}</p>
+    <p>
+      Urvalet är manuellt kuraterat och fokuserar på resurser som kan vara till hjälp för personer med bipolär sjukdom,
+      anhöriga och andra närstående. Sajten är medvetet liten och försöker inte ersätta vårdens egna kanaler.
+    </p>
+    <p>
+      Målet är att göra det lättare att hitta relevanta svenska källor utan reklamkänsla, utan stockfoton och utan att
+      ge intryck av officiell tillhörighet.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .page {
+    width: min(100% - 2rem, 48rem);
+    margin: 0 auto;
+    padding: 3rem 0 4rem;
+  }
+
+  h1 {
+    font-size: clamp(2.3rem, 2rem + 1.4vw, 3.3rem);
+  }
+
+  p {
+    line-height: 1.75;
+    color: var(--muted);
+  }
+</style>

@@ -1,0 +1,42 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { t } from "@/lib/i18n";
+
+const locale = "sv" as const;
+const copy = t(locale);
+---
+
+<BaseLayout locale={locale} title={copy.disclaimerPage.title}>
+  <section class="page">
+    <h1>{copy.disclaimerPage.title}</h1>
+    <p>{copy.disclaimerPage.intro}</p>
+    <ul>
+      <li>Sajten ger inte medicinska råd, diagnoser eller behandlingsrekommendationer.</li>
+      <li>Vid akuta läget eller risk för att du eller någon annan skadas ska du kontakta 112 eller psykiatrisk akutmottagning.</li>
+      <li>Länkade resurser ansvarar själva för sitt innehåll, sin aktualitet och sina villkor.</li>
+      <li>Urvalet på sajten är redaktionellt och neutralt men inte heltäckande.</li>
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .page {
+    width: min(100% - 2rem, 48rem);
+    margin: 0 auto;
+    padding: 3rem 0 4rem;
+  }
+
+  h1 {
+    font-size: clamp(2.3rem, 2rem + 1.4vw, 3.3rem);
+  }
+
+  p,
+  li {
+    line-height: 1.75;
+    color: var(--muted);
+  }
+
+  ul {
+    padding-left: 1.25rem;
+  }
+</style>

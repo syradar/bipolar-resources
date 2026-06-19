@@ -1,0 +1,362 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ResourceCard from "@/components/ResourceCard.astro";
+import { categories } from "@/content.config";
+import { t } from "@/lib/i18n";
+import { getResourcesByLocale } from "@/lib/resources";
+import { buildResourceIndexSnapshot } from "@/lib/resource-search";
+
+const locale = "sv" as const;
+const copy = t(locale);
+const resources = await getResourcesByLocale(locale);
+const featuredResources = resources.filter((resource) => resource.featured);
+const searchSnapshot = await buildResourceIndexSnapshot(resources);
+const searchData = JSON.stringify({
+  records: resources,
+  snapshot: searchSnapshot,
+});
+---
+
+<BaseLayout locale={locale}>
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">{copy.hero.eyebrow}</p>
+      <h1>{copy.hero.title}</h1>
+      <p class="intro">{copy.hero.intro}</p>
+    </div>
+  </section>
+
+  <section class="audience-overview" aria-labelledby="for-who">
+    <div class="section-heading">
+      <h2 id="for-who">{copy.sections.forWho}</h2>
+    </div>
+    <div class="audience-grid">
+      <a href="#resource-search" class="audience-panel" data-audience-filter="egen-diagnos">
+        <h3>{copy.audiences["egen-diagnos"]}</h3>
+        <p>
+          Kunskap, vardagsstöd och resurser som kan vara relevanta för dig som
+          lever med diagnosen.
+        </p>
+      </a>
+      <a href="#resource-search" class="audience-panel" data-audience-filter="anhorig">
+        <h3>{copy.audiences.anhorig}</h3>
+        <p>
+          Hitta stöd, orientering och material som hjälper dig att stå bredvid
+          någon du bryr dig om.
+        </p>
+      </a>
+      <a href="#resource-search" class="audience-panel" data-audience-filter="bada">
+        <h3>{copy.audiences.bada}</h3>
+        <p>
+          Vissa resurser fungerar som gemensam utgångspunkt för samtal, krisstöd
+          eller fortsatt sökande.
+        </p>
+      </a>
+    </div>
+  </section>
+
+  <section aria-labelledby="featured-resources">
+    <div class="section-heading">
+      <h2 id="featured-resources">{copy.sections.featured}</h2>
+    </div>
+    <div class="resource-grid">
+      {
+        featuredResources.map((resource) => (
+          <ResourceCard locale={locale} resource={resource} />
+        ))
+      }
+    </div>
+  </section>
+
+  <section
+    id="resource-search"
+    class="search-section"
+    aria-labelledby="all-resources"
+  >
+    <div class="section-heading">
+      <h2 id="all-resources">{copy.sections.allResources}</h2>
+    </div>
+
+    <form class="filters" data-search-form>
+      <div class="field search">
+        <label for="resource-query">{copy.filters.searchLabel}</label>
+        <input
+          id="resource-query"
+          name="q"
+          type="search"
+          placeholder={copy.filters.searchPlaceholder}
+        />
+      </div>
+      <div class="field">
+        <label for="resource-audience">{copy.filters.audienceLabel}</label>
+        <select id="resource-audience" name="audience">
+          <option value="">Alla</option>
+          <option value="anhorig">{copy.audiences.anhorig}</option>
+          <option value="egen-diagnos">{copy.audiences["egen-diagnos"]}</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="resource-category">{copy.filters.categoryLabel}</label>
+        <select id="resource-category" name="category">
+          <option value="">Alla</option>
+          {
+            categories.map((category) => (
+              <option value={category}>{copy.categories[category]}</option>
+            ))
+          }
+        </select>
+      </div>
+      <div class="field button-field">
+        <button type="reset">{copy.filters.reset}</button>
+      </div>
+    </form>
+
+    <p class="results-count">
+      <span data-results-count>{resources.length}</span>
+      {copy.filters.resultCount}
+    </p>
+
+    <div class="resource-grid" data-search-results>
+      {
+        resources.map((resource) => (
+          <ResourceCard locale={locale} resource={resource} />
+        ))
+      }
+    </div>
+    <p class="empty-state" data-empty-state hidden>{copy.filters.noResults}</p>
+  </section>
+
+  <script
+    type="application/json"
+    id="resource-search-data"
+    is:inline
+    set:html={searchData}
+  />
+  <script>
+    import { loadResourceIndex, searchResources } from "@/lib/resource-search";
+
+    const dataNode = document.querySelector("#resource-search-data");
+    const form = document.querySelector("[data-search-form]");
+    const resultContainer = document.querySelector("[data-search-results]");
+    const resultCount = document.querySelector("[data-results-count]");
+    const emptyState = document.querySelector("[data-empty-state]");
+    const audienceLinks = document.querySelectorAll("[data-audience-filter]");
+
+    if (
+      dataNode &&
+      form instanceof HTMLFormElement &&
+      resultContainer &&
+      resultCount &&
+      emptyState
+    ) {
+      const { records, snapshot } = JSON.parse(dataNode.textContent ?? "{}");
+      const db = loadResourceIndex(snapshot);
+      const cards = Array.from(
+        resultContainer.querySelectorAll("[data-resource-card]"),
+      );
+
+      const applyFilters = async () => {
+        const formData = new FormData(form);
+        const result = await searchResources(db, records, {
+          q: String(formData.get("q") ?? ""),
+          audience: String(formData.get("audience") ?? "") as
+            | ""
+            | "egen-diagnos"
+            | "anhorig"
+            | "bada",
+          category: String(formData.get("category") ?? "") as
+            | ""
+            | "krisstod"
+            | "vard-och-rattigheter"
+            | "om-bipolaritet"
+            | "vardag-och-aterhamtning"
+            | "relationer-och-anhorigskap"
+            | "foreningar-och-gemenskap",
+        });
+
+        const visibleIds = new Set(result.records.map((record) => record.id));
+
+        cards.forEach((card, index) => {
+          const id = records[index]?.id;
+          const isVisible = id ? visibleIds.has(id) : false;
+          card.toggleAttribute("hidden", !isVisible);
+        });
+
+        resultCount.textContent = String(result.total);
+        emptyState.toggleAttribute("hidden", result.total > 0);
+      };
+
+      form.addEventListener("input", applyFilters);
+      form.addEventListener("change", applyFilters);
+      form.addEventListener("reset", () => {
+        window.setTimeout(() => {
+          void applyFilters();
+        }, 0);
+      });
+
+      audienceLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          const audience = link.getAttribute("data-audience-filter");
+          const audienceSelect = form.elements.namedItem("audience");
+
+          if (audienceSelect instanceof HTMLSelectElement && audience) {
+            audienceSelect.value = audience;
+            void applyFilters();
+          }
+        });
+      });
+
+      void applyFilters();
+    }
+  </script>
+</BaseLayout>
+
+<style>
+  section {
+    width: min(100% - 2rem, var(--content-width));
+    margin: 0 auto;
+    padding: 2rem 0;
+  }
+
+  .hero {
+    display: grid;
+    gap: 1.5rem;
+    padding-top: 2.75rem;
+  }
+
+  /* .hero-copy, */
+  .disclaimer,
+  .audience-panel,
+  .filters {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: calc(var(--radius) + 0.4rem);
+    box-shadow: var(--shadow);
+  }
+
+  .hero-copy {
+    padding: 2rem;
+  }
+
+  .eyebrow {
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.8rem;
+    margin: 0 0 1rem;
+  }
+
+  h1,
+  h2,
+  h3 {
+    line-height: 1.1;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2.5rem, 2.1rem + 2vw, 4.5rem);
+    max-width: 12ch;
+  }
+
+  .intro {
+    font-size: 1.1rem;
+    line-height: 1.75;
+    color: var(--muted);
+    max-width: 60ch;
+    margin: 1rem 0 0;
+  }
+
+  .section-heading {
+    margin-bottom: 1rem;
+  }
+
+  .section-heading h2 {
+    margin: 0;
+    font-size: clamp(1.7rem, 1.4rem + 1vw, 2.4rem);
+  }
+
+  .audience-grid,
+  .resource-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .audience-panel {
+    display: block;
+    padding: 1.25rem;
+    text-decoration: none;
+    transition:
+      border-color 160ms ease,
+      box-shadow 160ms ease,
+      transform 160ms ease;
+  }
+
+  .audience-panel:hover {
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+    box-shadow: 0 18px 34px rgba(34, 49, 58, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .audience-panel p {
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .filters {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr)) auto;
+    gap: 1rem;
+    align-items: end;
+    padding: 1rem;
+  }
+
+  .field {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  label {
+    font-size: 0.95rem;
+  }
+
+  input,
+  select,
+  button {
+    min-height: 3rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--surface-strong);
+    padding: 0.7rem 0.9rem;
+    color: var(--text);
+    font: inherit;
+  }
+
+  button {
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+  }
+
+  .results-count {
+    color: var(--muted);
+    margin: 1rem 0;
+  }
+
+  .empty-state {
+    color: var(--muted);
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  @media (max-width: 64rem) {
+    .hero,
+    .audience-grid,
+    .resource-grid,
+    .filters {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,20 @@
+---
+const basePath = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const svPath = `${basePath}sv/`;
+---
+
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0; url=${svPath}`} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Redirecting</title>
+    <link rel="canonical" href={svPath} />
+  </head>
+  <body>
+    <p>Gå vidare till <a href={svPath}>svenska resurser</a>.</p>
+  </body>
+</html>
