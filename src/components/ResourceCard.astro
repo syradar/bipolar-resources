@@ -10,6 +10,9 @@ type Props = {
 
 const { locale, resource } = Astro.props;
 const copy = t(locale);
+const formattedDateAdded = new Intl.DateTimeFormat(locale, {
+  dateStyle: "short",
+}).format(new Date(resource.dateAdded));
 ---
 
 <article
@@ -37,7 +40,9 @@ const copy = t(locale);
     </div>
     <div>
       <dt>{copy.cards.dateAdded}</dt>
-      <dd>{resource.dateAdded}</dd>
+      <dd>
+        <time datetime={resource.dateAdded}>{formattedDateAdded}</time>
+      </dd>
     </div>
   </dl>
   <ul class="tags" aria-label="Taggar">

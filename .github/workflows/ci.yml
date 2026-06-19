@@ -10,6 +10,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
+      CONTENTFUL_DELIVERY_TOKEN: ${{ secrets.CONTENTFUL_DELIVERY_TOKEN }}
+      CONTENTFUL_PREVIEW_TOKEN: ${{ secrets.CONTENTFUL_PREVIEW_TOKEN }}
+      CONTENTFUL_RESOURCE_CONTENT_TYPE: ${{ vars.CONTENTFUL_RESOURCE_CONTENT_TYPE || 'contentSchema' }}
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v5
