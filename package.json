@@ -14,7 +14,7 @@
   "dependencies": {
     "@contentful/rich-text-html-renderer": "^17.2.2",
     "@orama/orama": "^3.1.12",
-    "astro": "^6.4.8",
+    "astro": "^7.1.0",
     "contentful": "^11.12.5",
     "zod": "^4.0.5"
   },
